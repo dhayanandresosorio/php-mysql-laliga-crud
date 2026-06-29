@@ -1,28 +1,25 @@
 # PHP MySQL LaLiga CRUD
 
-Aplicación CRUD básica desarrollada con PHP y MySQL para gestionar equipos de LaLiga.
+Proyecto de práctica realizado con PHP y MySQL para gestionar equipos de LaLiga mediante un CRUD sencillo.
 
-El proyecto incluye autenticación de usuarios, sesiones, listado, detalle, creación, edición, eliminación de equipos, preferencias mediante cookies y conexión a base de datos usando `mysqli`.
+El proyecto empezó como una práctica de conexión entre PHP y MySQL. Después lo he reorganizado para GitHub separando el código PHP, los scripts SQL y la documentación, de forma que se pueda revisar mejor y no quede todo mezclado en un único README.
 
-> [!NOTE]
-> Este repositorio está planteado como laboratorio técnico de PHP + MySQL. No es una aplicación de producción, sino una práctica organizada para entender conexión a base de datos, sesiones, formularios, consultas preparadas y operaciones CRUD.
-
-## Objetivo
-
-El objetivo principal es construir una pequeña aplicación web conectada a MySQL, separando la documentación, los scripts SQL y el código PHP.
+## Qué trabaja este proyecto
 
 La aplicación permite:
 
-- iniciar sesión;
+- iniciar sesión con usuario y contraseña;
+- mantener la sesión activa con `$_SESSION`;
 - listar equipos;
 - ver el detalle de un equipo;
 - añadir equipos;
 - editar equipos;
 - eliminar equipos;
-- guardar una preferencia visual mediante cookie;
+- guardar una preferencia visual con una cookie;
 - crear usuarios desde terminal;
-- trabajar con consultas preparadas;
-- mantener la configuración fuera del repositorio.
+- conectar PHP con MySQL usando `mysqli`.
+
+También he añadido algunas mejoras básicas para que el código quede más limpio, como separar la conexión a base de datos, usar una configuración de ejemplo y evitar subir credenciales reales.
 
 ## Tecnologías utilizadas
 
@@ -34,7 +31,6 @@ La aplicación permite:
 - CSS básico
 - Sesiones PHP
 - Cookies
-- Consultas preparadas
 - Git y GitHub
 
 ## Estructura del repositorio
@@ -46,7 +42,7 @@ php-mysql-laliga-crud/
 |-- .gitattributes
 |-- docs/
 |   |-- memoria.md
-|   |-- memoria-original.md
+|   |-- apuntes-originales.md
 |-- sql/
 |   |-- README.md
 |   |-- 01_create_database.sql
@@ -79,50 +75,28 @@ php-mysql-laliga-crud/
 |   |   |-- footer.php
 ~~~
 
-## Funcionalidades
-
-- Login con usuario y contraseña.
-- Control de sesión con `$_SESSION`.
-- Cierre de sesión.
-- Listado de equipos.
-- Vista de detalle.
-- Alta de equipos.
-- Edición de equipos.
-- Eliminación de equipos mediante POST.
-- Preferencia de color de fondo con cookie.
-- Creación de usuarios desde terminal.
-- Conexión MySQL centralizada.
-- Plantilla de configuración sin credenciales reales.
-- Uso de `password_hash()` y `password_verify()`.
-- Uso de consultas preparadas.
-- Escape de salida HTML con `htmlspecialchars()`.
-
 ## Base de datos
 
-La base de datos utilizada se llama:
-
-~~~text
-laliga
-~~~
+La base de datos utilizada se llama `laliga`.
 
 Tablas principales:
 
 - `equipos`
 - `usuarios`
 
-La carpeta `sql/` contiene los scripts necesarios para crear la base de datos, las tablas, el usuario de aplicación y algunos datos de ejemplo.
+Los scripts SQL están separados en la carpeta `sql/` para poder crear la base de datos, las tablas, el usuario de aplicación y algunos datos de ejemplo.
 
-## Configuración local
+## Cómo probarlo en local
 
 El archivo real de configuración no se sube al repositorio.
 
-Para ejecutar el proyecto:
+Para probar el proyecto:
 
 1. Copiar `src/config.example.php` como `src/config.php`.
-2. Editar la contraseña local de MySQL.
-3. Ejecutar los scripts de `sql/`.
-4. Crear un usuario de aplicación con `src/crear_usuario.php`.
-5. Acceder a `src/login.php`.
+2. Cambiar la contraseña de ejemplo por la contraseña local de MySQL.
+3. Ejecutar los scripts de la carpeta `sql/`.
+4. Crear un usuario de acceso con `src/crear_usuario.php`.
+5. Entrar desde `src/login.php`.
 
 Ejemplo:
 
@@ -131,32 +105,32 @@ cp src/config.example.php src/config.php
 php src/crear_usuario.php admin contraseña_local
 ~~~
 
-> [!IMPORTANT]
-> Las credenciales reales no forman parte del repositorio. En los ejemplos se utiliza `CHANGE_ME_DB_PASSWORD` como placeholder.
+En el repositorio se usa `CHANGE_ME_DB_PASSWORD` como valor de ejemplo.
 
-## Seguridad aplicada
+## Cambios que hice al preparar el repo
 
-Durante la limpieza del proyecto se han aplicado varias mejoras:
+La práctica original estaba más centrada en documentar los pasos de instalación y conexión a MySQL. Para dejarla mejor como proyecto de GitHub, hice estos cambios:
 
-- contraseña real sustituida por placeholder;
-- archivo `src/config.php` excluido en `.gitignore`;
-- uso de `password_hash()` y `password_verify()`;
-- consultas preparadas en operaciones con datos;
-- borrado mediante POST;
-- token CSRF básico en formularios sensibles;
-- salida HTML protegida con `htmlspecialchars()`;
-- páginas internas protegidas mediante sesión.
+- separé el código PHP en `src/`;
+- añadí scripts SQL reutilizables en `sql/`;
+- separé funciones comunes en `src/includes/`;
+- añadí una hoja de estilos básica;
+- moví la explicación larga a `docs/memoria.md`;
+- limpié credenciales y dejé una configuración de ejemplo;
+- añadí `.gitignore` y `.gitattributes`.
 
-## Documentación
+## Notas
 
-La memoria técnica completa está en:
+Es un proyecto de práctica, no una aplicación pensada para producción. Aun así, he intentado aplicar buenas bases: consultas preparadas, contraseña hasheada, separación de configuración, control de sesión y borrado mediante POST.
+
+La memoria técnica está en:
 
 ~~~text
 docs/memoria.md
 ~~~
 
-La documentación original de la práctica, limpiada de credenciales, se conserva en:
+Los apuntes originales de la práctica, ya limpiados de credenciales, están en:
 
 ~~~text
-docs/memoria-original.md
+docs/apuntes-originales.md
 ~~~

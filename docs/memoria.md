@@ -1,49 +1,53 @@
 # Memoria técnica - PHP MySQL LaLiga CRUD
 
-## 1. Resumen del proyecto
+## 1. Punto de partida
 
-En esta práctica he desarrollado una aplicación CRUD básica utilizando PHP y MySQL.
+Este proyecto empezó como una práctica para trabajar la conexión entre PHP y MySQL.
 
-La aplicación permite gestionar equipos de LaLiga desde una interfaz web sencilla. Incluye login, sesiones, listado de equipos, vista de detalle, inserción, edición, eliminación y preferencias de usuario mediante cookies.
+La idea inicial era sencilla: instalar MySQL, crear una base de datos llamada `laliga`, crear una tabla de equipos y conectar desde PHP para hacer consultas e inserciones.
 
-El objetivo principal ha sido practicar la conexión entre PHP y MySQL, la gestión de formularios, el uso de sesiones y la ejecución de consultas SQL desde código PHP.
+Al revisar el proyecto para subirlo a GitHub, vi que podía quedar mejor si no lo dejaba como una única documentación larga. Por eso separé el contenido en varias partes:
 
-> [!NOTE]
-> Este proyecto no está planteado como una aplicación final de producción. Es un laboratorio técnico para practicar PHP, MySQL, sesiones, cookies, consultas preparadas y organización de código.
+- código PHP en `src/`;
+- scripts SQL en `sql/`;
+- documentación técnica en `docs/`;
+- configuración de ejemplo sin credenciales reales.
+
+No he querido convertirlo en una aplicación ficticia demasiado grande. La idea sigue siendo la misma: mostrar una práctica real de PHP + MySQL, pero organizada de una forma más limpia.
 
 ---
 
-## 2. Funcionalidades implementadas
+## 2. Qué permite hacer la aplicación
 
-La aplicación incluye:
+La aplicación permite gestionar equipos de LaLiga desde una interfaz web sencilla.
 
-- inicio de sesión;
+Funcionalidades principales:
+
+- login de usuario;
 - cierre de sesión;
-- protección de páginas mediante `$_SESSION`;
+- protección de páginas mediante sesión;
 - listado de equipos;
-- detalle de un equipo;
-- inserción de nuevos equipos;
-- edición de equipos existentes;
-- eliminación de equipos;
+- vista de detalle;
+- creación de equipos;
+- edición de equipos;
+- borrado de equipos;
 - preferencia de color de fondo mediante cookie;
-- creación de usuarios desde terminal;
-- conexión reutilizable a MySQL;
-- token CSRF básico en formularios sensibles.
+- creación de usuarios desde terminal.
 
 ---
 
 ## 3. Base de datos
 
-La base de datos principal se llama `laliga`.
+La base de datos utilizada se llama `laliga`.
 
-Tablas utilizadas:
+Se utilizan dos tablas principales:
 
-- `equipos`;
-- `usuarios`.
+- `equipos`
+- `usuarios`
 
-La tabla `equipos` almacena la información de los clubes.
+La tabla `equipos` guarda la información de los clubes.
 
-La tabla `usuarios` almacena los usuarios que pueden acceder a la aplicación. En esta versión se utiliza `password_hash` para guardar hashes de contraseña, evitando almacenar contraseñas en texto plano.
+La tabla `usuarios` sirve para controlar el acceso a la aplicación.
 
 ---
 
@@ -61,6 +65,16 @@ CREATE TABLE IF NOT EXISTS equipos (
 );
 ~~~
 
+Campos principales:
+
+- `id_equipo`: identificador del equipo.
+- `nombre`: nombre del club.
+- `ciudad`: ciudad o sede.
+- `estadio`: estadio principal.
+- `fundacion_year`: año de fundación.
+- `presidente`: presidente del club.
+- `presupuesto`: presupuesto aproximado.
+
 ---
 
 ## 5. Tabla usuarios
@@ -73,71 +87,100 @@ CREATE TABLE IF NOT EXISTS usuarios (
 );
 ~~~
 
-La contraseña no se guarda directamente. Se genera un hash mediante `password_hash()` desde PHP.
+En la versión inicial de la práctica trabajaba con una tabla de usuarios más simple. Al reorganizar el proyecto, cambié el campo de contraseña a `password_hash` para dejar claro que no se debe guardar la contraseña en texto plano.
 
-Para validar el login se utiliza `password_verify()`.
+Desde PHP se usa:
+
+- `password_hash()` para crear el hash;
+- `password_verify()` para comprobar la contraseña en el login.
 
 ---
 
 ## 6. Organización del código
 
-La aplicación se ha reorganizado separando responsabilidades:
+El código está separado para que sea más fácil de entender.
 
-- `src/includes/db.php`: conexión a MySQL.
-- `src/includes/auth.php`: control de sesión y acceso.
-- `src/includes/helpers.php`: funciones auxiliares.
-- `src/includes/header.php`: cabecera común.
-- `src/includes/footer.php`: cierre HTML común.
-- `src/assets/style.css`: estilo básico de la interfaz.
+Archivos principales:
 
-Esta separación hace que el código sea más limpio y más fácil de revisar.
+- `src/login.php`: formulario de inicio de sesión.
+- `src/comprobar_login.php`: validación del usuario.
+- `src/listado_equipos.php`: listado principal.
+- `src/nuevo_equipo.php`: formulario para añadir equipo.
+- `src/insertar_equipo.php`: inserción en base de datos.
+- `src/detalle_equipo.php`: detalle de un equipo.
+- `src/editar_equipo.php`: formulario de edición.
+- `src/actualizar_equipo.php`: actualización de datos.
+- `src/borrar_equipo.php`: eliminación de equipo.
+- `src/preferencias.php`: formulario para elegir color de fondo.
+- `src/guardar_preferencia.php`: guardado de la cookie.
+- `src/crear_usuario.php`: creación de usuarios desde terminal.
+
+También añadí una carpeta `includes/` para no repetir código en todos los archivos.
 
 ---
 
-## 7. Conexión a MySQL
+## 7. Includes reutilizables
 
-La conexión se centraliza en `src/includes/db.php`.
+La carpeta `src/includes/` contiene archivos comunes:
 
-El archivo carga la configuración desde `src/config.php`. Si ese archivo no existe, utiliza `src/config.example.php` como plantilla.
+- `db.php`: conexión a MySQL.
+- `auth.php`: control básico de sesión.
+- `helpers.php`: funciones auxiliares.
+- `header.php`: inicio de la plantilla HTML.
+- `footer.php`: cierre de la plantilla HTML.
 
-~~~php
-$config = require __DIR__ . '/../config.php';
+Esto hace que el proyecto sea más ordenado que tener conexión, sesión y HTML repetidos en cada archivo.
 
-$mysqli = new mysqli(
-    $config['host'],
-    $config['user'],
-    $config['password'],
-    $config['database']
-);
+---
+
+## 8. Conexión a MySQL
+
+La conexión a MySQL se centraliza en `src/includes/db.php`.
+
+El proyecto usa un archivo de configuración de ejemplo:
+
+~~~text
+src/config.example.php
 ~~~
 
-El archivo `src/config.php` está excluido mediante `.gitignore` para evitar subir credenciales reales.
+Para ejecutarlo en local, habría que copiarlo como:
 
----
-
-## 8. Login y sesiones
-
-El login se realiza desde `src/login.php`.
-
-El formulario envía los datos a `src/comprobar_login.php`.
-
-El proceso de autenticación consulta el usuario en la base de datos y valida la contraseña mediante `password_verify()`.
-
-~~~php
-if ($fila && password_verify($password, $fila['password_hash'])) {
-    session_regenerate_id(true);
-    $_SESSION['usuario'] = $fila['usuario'];
-    redirect('listado_equipos.php');
-}
+~~~text
+src/config.php
 ~~~
 
-Las páginas internas comprueban si existe una sesión activa mediante `require_login()`.
+El archivo `src/config.php` está en `.gitignore`, porque ahí irían los datos reales de conexión.
 
 ---
 
-## 9. Consultas preparadas
+## 9. Login y sesiones
 
-Las operaciones que reciben datos externos utilizan consultas preparadas.
+El login se hace con un formulario en `login.php`.
+
+Después, `comprobar_login.php` busca el usuario en la base de datos y comprueba la contraseña con `password_verify()`.
+
+Si el login es correcto, se guarda el usuario en sesión:
+
+~~~php
+$_SESSION['usuario'] = $fila['usuario'];
+~~~
+
+Las páginas internas llaman a `require_login()` para evitar que alguien acceda sin iniciar sesión.
+
+---
+
+## 10. CRUD de equipos
+
+El CRUD trabaja sobre la tabla `equipos`.
+
+Operaciones principales:
+
+- `SELECT` para listar y ver detalles;
+- `INSERT` para crear equipos;
+- `UPDATE` para editar equipos;
+- `DELETE` para borrar equipos.
+
+En las operaciones que reciben datos del usuario se utilizan consultas preparadas.
 
 Ejemplo de inserción:
 
@@ -150,67 +193,64 @@ $stmt->bind_param('sssisd', $nombre, $ciudad, $estadio, $fundacion_year, $presid
 $stmt->execute();
 ~~~
 
-Esto evita concatenar directamente los datos del formulario dentro de la consulta SQL.
-
 ---
 
-## 10. Protección CSRF básica
+## 11. Preferencias con cookies
 
-Para las acciones sensibles se añade un token CSRF básico.
+Añadí una preferencia sencilla de color de fondo.
 
-El token se genera en sesión y después se valida en los formularios POST.
-
-~~~php
-if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
-    die('Token CSRF inválido.');
-}
-~~~
-
----
-
-## 11. Cookies de preferencias
-
-La aplicación permite guardar una preferencia de color de fondo.
-
-El archivo `src/guardar_preferencia.php` guarda la cookie durante 30 días.
+El usuario elige un color desde `preferencias.php` y se guarda una cookie desde `guardar_preferencia.php`.
 
 ~~~php
 setcookie('color_fondo', $color_fondo, time() + (30 * 24 * 60 * 60), '/');
 ~~~
 
-Para evitar valores no deseados, el color se valida contra una lista de colores permitidos.
+Para no aceptar cualquier valor, el color se compara con una lista de colores permitidos.
 
 ---
 
-## 12. Limpieza realizada
+## 12. Cambios de seguridad básicos
 
-Durante la preparación del repositorio se han aplicado estos cambios:
+No es una aplicación profesional completa, pero sí he aplicado algunas bases que tienen sentido incluso en una práctica:
 
-- se sustituyó la contraseña real por `CHANGE_ME_DB_PASSWORD`;
-- se separó la documentación larga en `docs/`;
-- se creó una carpeta `sql/` con scripts reutilizables;
-- se movió el código PHP limpio a `src/`;
-- se añadieron includes reutilizables;
-- se añadió una hoja CSS básica;
-- se añadió `.gitignore`;
-- se añadió `.gitattributes`;
-- se evitó publicar `config.php`;
-- se descartó como código activo una versión inicial insegura que mezclaba conexión, formulario e inserción con SQL concatenado.
+- no subir `config.php` con credenciales reales;
+- usar una contraseña de ejemplo en la documentación;
+- guardar hashes de contraseña;
+- usar consultas preparadas;
+- escapar la salida HTML con `htmlspecialchars()`;
+- hacer el borrado mediante POST;
+- añadir un token CSRF básico en formularios sensibles.
+
+Estas mejoras no convierten la práctica en una aplicación lista para producción, pero sí muestran una forma más correcta de organizarla.
 
 ---
 
-## 13. Valor técnico
+## 13. Qué mejoraría en una versión más completa
 
-Esta práctica demuestra conocimientos básicos pero importantes para desarrollo web con PHP y MySQL:
+Si quisiera convertir este proyecto en algo más serio, los siguientes pasos serían:
 
-- conexión a base de datos;
-- creación de tablas;
-- usuarios y permisos MySQL;
+- añadir validaciones más completas en formularios;
+- mejorar el diseño visual;
+- mostrar mensajes de error y éxito de forma más clara;
+- añadir paginación o búsqueda en el listado;
+- crear roles de usuario;
+- preparar un entorno con Docker;
+- añadir pruebas básicas;
+- documentar una instalación completa en Apache o Nginx.
+
+---
+
+## 14. Valor de la práctica
+
+Aunque es un proyecto sencillo, me ha servido para practicar varias bases importantes:
+
+- conexión PHP + MySQL;
+- creación de base de datos y tablas;
+- separación de configuración;
 - sesiones;
 - cookies;
-- formularios;
 - operaciones CRUD;
 - consultas preparadas;
-- separación de configuración;
-- protección básica CSRF;
-- organización de un repositorio para portfolio.
+- organización de un repositorio para GitHub.
+
+Lo más importante de este repo no es que sea una aplicación grande, sino que muestra el proceso de pasar de una práctica básica a un proyecto más ordenado y revisable.
