@@ -251,6 +251,3 @@ Aunque es un proyecto sencillo, me ha servido para practicar varias bases import
 - cookies;
 - operaciones CRUD;
 - consultas preparadas;
-- organización de un repositorio para GitHub.
-
-Lo más importante de este repo no es que sea una aplicación grande, sino que muestra el proceso de pasar de una práctica básica a un proyecto más ordenado y revisable.
