@@ -1,0 +1,56 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    color: #222;
+}
+
+.container {
+    max-width: 980px;
+    margin: 40px auto;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.92);
+    border-radius: 12px;
+}
+
+.nav {
+    margin: 20px 0;
+}
+
+.nav a,
+button,
+input[type="submit"] {
+    display: inline-block;
+    margin: 4px;
+    padding: 8px 12px;
+    border: 1px solid #222;
+    border-radius: 6px;
+    background: #fff;
+    color: #222;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+}
+
+th,
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+}
+
+label {
+    display: block;
+    margin: 12px 0;
+}
+
+input,
+select {
+    padding: 8px;
+    width: 100%;
+    max-width: 420px;
+}
